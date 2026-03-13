@@ -1,0 +1,37 @@
+<h2>Focus Session (Pomodoro)</h2>
+
+<div *ngIf="!sessionCompleted">
+  <p class="time">{{ minutes }}:{{ seconds }}</p>
+
+  <button (click)="start()" [disabled]="isRunning">Start</button>
+  <button (click)="reset()">Reset</button>
+</div>
+
+<div *ngIf="sessionCompleted">
+  <h3>Session Complete ✅</h3>
+
+  <div *ngIf="!surveySubmitted">
+    <p><strong>How focused were you?</strong></p>
+
+    <div class="rating-row">
+      <button
+        *ngFor="let r of [1,2,3,4,5]"
+        (click)="setRating(r)"
+        [class.selected]="focusRating === r"
+        type="button">
+        {{ r }}
+      </button>
+    </div>
+
+    <p class="hint" *ngIf="focusRating === null">Pick a rating from 1 to 5.</p>
+
+    <button (click)="submitSurvey()" [disabled]="focusRating === null">
+      Submit
+    </button>
+  </div>
+
+  <div *ngIf="surveySubmitted">
+    <p>Thanks! You rated this session: <strong>{{ focusRating }}</strong>/5</p>
+    <button (click)="reset()">Start another session</button>
+  </div>
+</div>

@@ -1,0 +1,28 @@
+.time {
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.rating-row {
+  display: flex;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.rating-row button {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.rating-row button.selected {
+  font-weight: bold;
+  outline: 2px solid #333;
+}
+
+.hint {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}

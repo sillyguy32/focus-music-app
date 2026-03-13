@@ -1,9 +1,10 @@
 import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { FocusSessionComponent } from './pages/focus-session/focus-session.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, FocusSessionComponent],
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
