@@ -1,5 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { SessionService } from '../../services/session.service';
+import { Session } from '../../models/session.model';
 
 @Component({
   selector: 'app-focus-session',
@@ -9,6 +11,8 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./focus-session.component.css']
 })
 export class FocusSessionComponent implements OnDestroy {
+
+  constructor(private sessionService: SessionService) {}
   private timer: any = null;
 
   totalSeconds = 25 * 60; // 25 mins
@@ -67,15 +71,16 @@ export class FocusSessionComponent implements OnDestroy {
 
     this.surveySubmitted = true;
 
-    const sessionResult = {
-      startTime: this.startTime,
-      endTime: this.endTime,
-      plannedDurationSeconds: this.totalSeconds,
-      actualDurationSeconds: this.totalSeconds - this.remainingSeconds,
+    const sessionResult: Session = {
+      startTime: this.startTime!,
+      endTime: this.endTime!,
+      duration: this.totalSeconds - this.remainingSeconds,
       focusRating: this.focusRating,
+      musicPlayed: 'TBD', // to be implemented in the future
       mode: 'pomodoro'
     };
 
+    this.sessionService.addSession(sessionResult);
     console.log('Session result:', sessionResult);
   }
 
