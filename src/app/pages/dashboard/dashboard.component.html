@@ -1,0 +1,27 @@
+<h2>Dashboard</h2>
+
+<div class="stats-container">
+
+  <div class="stat-card">
+    <h3>Total Sessions</h3>
+    <p>{{ totalSessions }}</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Total Focus Time</h3>
+    <p>{{ totalFocusTime }} sec</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Average Focus Rating</h3>
+    <p>{{ averageFocus | number:'1.1-1' }}</p>
+  </div>
+
+</div>
+
+<h3>Sessions</h3>
+
+<div *ngFor="let session of sessions" class="session-card">
+  <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
+  <p>Focus Rating: {{ session.focusRating }}</p>
+</div>

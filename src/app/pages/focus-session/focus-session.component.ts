@@ -15,7 +15,7 @@ export class FocusSessionComponent implements OnDestroy {
   constructor(private sessionService: SessionService) {}
   private timer: any = null;
 
-  totalSeconds = 25 * 60; // 25 mins
+  totalSeconds = 25*60; // 25 mins
   remainingSeconds = this.totalSeconds;
 
   isRunning = false;
