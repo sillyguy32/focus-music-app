@@ -17,3 +17,25 @@
   border-radius: 6px;
   margin-bottom: 10px;
 }
+
+.excellent {
+  color: green;
+  font-weight: bold;
+}
+
+.good {
+  color: #4caf50;
+}
+
+.decent {
+  color: #ff9800;
+}
+
+.distracted {
+  color: #f44336;
+}
+
+.very-distracted {
+  color: darkred;
+  font-weight: bold;
+}

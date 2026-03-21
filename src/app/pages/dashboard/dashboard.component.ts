@@ -45,4 +45,14 @@ export class DashboardComponent {
         return 'Very Distracted!';
     }
 
+    getFocusClass(rating: number): string {
+        if (rating >= 5) return 'excellent';
+        if (rating >= 4) return 'good';
+        if (rating >= 3) return 'decent';
+        if (rating >= 2) return 'distracted';
+        return 'very-distracted';
+    }
+
+    
+
 }
