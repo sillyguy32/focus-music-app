@@ -37,4 +37,12 @@ export class DashboardComponent {
     
     }
 
+    getFocusLabel(rating: number): string {
+        if (rating >= 5) return 'Excellent!';
+        if (rating >= 4) return 'Good!';
+        if (rating >= 3) return 'Decent!';
+        if (rating >= 2) return 'Distracted!';
+        return 'Very Distracted!';
+    }
+
 }

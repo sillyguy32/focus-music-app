@@ -23,5 +23,5 @@
 
 <div *ngFor="let session of sessions" class="session-card">
   <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
-  <p>Focus Rating: {{ session.focusRating }}</p>
+  <p>Focus Rating: {{ session.focusRating }} ({{ getFocusLabel(session.focusRating) }})</p>
 </div>
