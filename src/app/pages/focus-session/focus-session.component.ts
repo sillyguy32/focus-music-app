@@ -99,6 +99,14 @@ export class FocusSessionComponent implements OnDestroy {
   get seconds(): string {
     return String(this.remainingSeconds % 60).padStart(2, '0');
   }
+  
+  stopEarly() {
+    if (!this.isRunning) return;
+
+    this.stopTimer();
+    this.endTime = new Date();
+    this.sessionCompleted = true;
+  }
 
   // so timers keep running if u tab out
   ngOnDestroy(): void {

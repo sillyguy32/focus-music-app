@@ -5,6 +5,7 @@
 
   <button (click)="start()" [disabled]="isRunning">Start</button>
   <button (click)="reset()">Reset</button>
+  <button (click)="stopEarly()" [disabled]="!isRunning">Stop</button>
 </div>
 
 <div *ngIf="sessionCompleted">
