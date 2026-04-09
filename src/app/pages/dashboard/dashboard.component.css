@@ -18,6 +18,12 @@
   margin-bottom: 10px;
 }
 
+.sessions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
 .excellent {
   color: green;
   font-weight: bold;
@@ -38,4 +44,10 @@
 .very-distracted {
   color: darkred;
   font-weight: bold;
+}
+
+.session-card p:first-child {
+  margin: 0;
+  font-size: 0.9em;
+  color: #666;
 }

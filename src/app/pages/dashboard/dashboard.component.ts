@@ -12,17 +12,19 @@ import { Session } from '../../models/session.model';
 })
 export class DashboardComponent {
 
-    sessions: Session[] = [];
 
-    constructor(private sessionService: SessionService) {
-        this.sessions = this.sessionService.getSessions();
+    constructor(private sessionService: SessionService) {}
+    get sessions(): Session[] {
+        return this.sessionService
+         .getSessions()
+         .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
     }
 
     get totalSessions(): number {
         return this.sessions.length;
     }
 
-    get totalFocusTime(): number {
+    get totalFocusTime(): number { // s = session
         return this.sessions.reduce((sum, s) => sum + s.duration, 0);
     }
 
@@ -37,6 +39,21 @@ export class DashboardComponent {
     
     }
 
+    get todaySessions(): Session[] {
+        const today = new Date().toDateString();
+
+        return this.sessions.filter(s => // again, s = session
+            new Date(s.startTime).toDateString() === today);
+    }
+
+    get todayFocusTime(): number {
+        return this.todaySessions.reduce((sum, s) => sum + s.duration, 0);
+    }
+    
+    get todaySessionsCount(): number {
+        return this.todaySessions.length;
+    }
+
     getFocusLabel(rating: number): string {
         if (rating >= 5) return 'Excellent!';
         if (rating >= 4) return 'Good!';
@@ -45,7 +62,7 @@ export class DashboardComponent {
         return 'Very Distracted!';
     }
 
-    getFocusClass(rating: number): string {
+    getFocusClass(rating: number): string { // color coding for focus rating
         if (rating >= 5) return 'excellent';
         if (rating >= 4) return 'good';
         if (rating >= 3) return 'decent';

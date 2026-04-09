@@ -17,17 +17,33 @@
     <p>{{ averageFocus | number:'1.1-1' }}</p>
   </div>
 
+  <div class="stat-card">
+    <h3>Today's Focus Time</h3>
+    <p>{{ todayFocusTime * 1000 | date:'mm:ss':'UTC' }} sec</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>Today's Sessions</h3>
+    <p>{{ todaySessionsCount }}</p>
+  </div>
+  
+
 </div>
 
 <h3>Sessions</h3>
 
-<div *ngFor="let session of sessions" class="session-card">
-  <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
+<div class="sessions">
+  <div *ngFor="let session of sessions" class="session-card">
 
-  <p>
-    Focus Rating:
-    <span [ngClass]="getFocusClass(session.focusRating)">
-      {{ session.focusRating }} ({{ getFocusLabel(session.focusRating) }})
-    </span>
-  </p>
+    <p><strong>{{ session.startTime | date:'HH:mm' }}</strong></p> <!-- show start time of session -->
+
+    <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
+
+    <p>
+      Focus Rating:
+      <span [ngClass]="getFocusClass(session.focusRating)">
+        {{ session.focusRating }} ({{ getFocusLabel(session.focusRating) }})
+      </span>
+    </p>
+  </div>
 </div>
