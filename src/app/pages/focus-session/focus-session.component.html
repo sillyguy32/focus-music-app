@@ -1,4 +1,13 @@
 <h2>Focus Session (Pomodoro)</h2>
+<label for="music">Music:</label>
+
+<select [(ngModel)]="selectedMusic" name="music">
+  <option value="None">None</option>
+  <option value="Lo-fi">Lo-fi</option>
+  <option value="Classical">Classical</option>
+  <option value="Ambient">Ambient</option>
+  <option value="White Noise">White Noise</option>
+</select>
 
 <div *ngIf="!sessionCompleted">
   <p class="time">{{ minutes }}:{{ seconds }}</p>

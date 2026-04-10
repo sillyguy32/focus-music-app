@@ -38,8 +38,10 @@
     <p><strong>{{ session.startTime | date:'HH:mm' }}</strong></p> <!-- show start time of session -->
 
     <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
-
+    <p>Music: {{ session.musicPlayed || 'None' }}</p> <!-- show music played during session -->
     <p>
+
+    
       Focus Rating:
       <span [ngClass]="getFocusClass(session.focusRating)">
         {{ session.focusRating }} ({{ getFocusLabel(session.focusRating) }})

@@ -2,11 +2,12 @@ import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SessionService } from '../../services/session.service';
 import { Session } from '../../models/session.model';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-focus-session',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './focus-session.component.html',
   styleUrls: ['./focus-session.component.css']
 })
@@ -26,6 +27,7 @@ export class FocusSessionComponent implements OnDestroy {
 
   // survey state
   focusRating: number | null = null;
+  selectedMusic: string = 'None'; //music feature 
   surveySubmitted = false;
 
   start() {
@@ -76,7 +78,7 @@ export class FocusSessionComponent implements OnDestroy {
       endTime: this.endTime!,
       duration: this.totalSeconds - this.remainingSeconds,
       focusRating: this.focusRating,
-      musicPlayed: 'TBD', // to be implemented in the future
+      musicPlayed: this.selectedMusic, // to be implemented in the future
       mode: 'pomodoro'
     };
 
