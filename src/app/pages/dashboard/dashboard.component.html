@@ -26,8 +26,26 @@
     <h3>Today's Sessions</h3>
     <p>{{ todaySessionsCount }}</p>
   </div>
-  
 
+ 
+
+</div>
+
+<div class="stats-container single">
+  <div class="stat-card">
+    <h3>Best Music for you! 🎶</h3>
+    <p>{{ bestMusicType }}</p>
+  </div>
+</div>
+
+<h3>Focus by Music 🎧</h3>
+
+<div *ngFor="let music of uniqueMusicType" class="stat-card">
+  <p><strong>{{ music }}</strong></p>
+  <p>
+    Avg Focus:
+    {{ getAverageFocusByMusicType(music) | number:'1.1-1' }}
+  </p>
 </div>
 
 <h3>Sessions</h3>
@@ -49,3 +67,4 @@
     </p>
   </div>
 </div>
+ 

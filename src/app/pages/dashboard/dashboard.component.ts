@@ -50,11 +50,11 @@ export class DashboardComponent {
         return this.todaySessions.reduce((sum, s) => sum + s.duration, 0);
     }
     
-    get todaySessionsCount(): number {
+    get todaySessionsCount(): number { 
         return this.todaySessions.length;
     }
 
-    getFocusLabel(rating: number): string {
+    getFocusLabel(rating: number): string { 
         if (rating >= 5) return 'Excellent!';
         if (rating >= 4) return 'Good!';
         if (rating >= 3) return 'Decent!';
@@ -70,6 +70,39 @@ export class DashboardComponent {
         return 'very-distracted';
     }
 
-    
+    getAverageFocusByMusicType(music: string): number { // to calculate average focus rating for a specific music type
+        const filtered = this.sessions.filter(s => s.musicPlayed === music);
+        if (filtered.length === 0) return 0;
+
+        const total = filtered.reduce((sum, s) => sum + s.focusRating, 0); // sum of focus ratings for the filtered sessions
+        return total / filtered.length;
+
+    }
+
+
+    get uniqueMusicType(): string[] { // to get unique music types for dashboard display
+        const musicSet = new Set(
+        this.sessions.map(s => s.musicPlayed || 'None') );
+
+        return Array.from(musicSet);
+
+    }
+
+    get bestMusicType(): string { // to determine which music type has the highest average focus rating
+        if (this.uniqueMusicType.length === 0) return 'None';
+
+        let best = this.uniqueMusicType[0];
+        let bestRating = this.getAverageFocusByMusicType(best);
+
+        for (const music of this.uniqueMusicType) { // loop through each unique music type
+            const score = this.getAverageFocusByMusicType(music);
+            if (score > bestRating) {
+                best = music;
+                bestRating = score;
+            }
+        }
+
+        return best;
+    }
 
 }
