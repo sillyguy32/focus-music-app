@@ -87,6 +87,8 @@ export class DashboardComponent {
         return Array.from(musicSet);
 
     }
+    // for the next 3 functions, they go through the same 4 steps: 1- start with default value, 2- loop through data, 3- compare values,
+    //  4- replace when better/worse, its called finding the min/max in a dataset or some shit 
 
     get bestMusicType(): string { // to determine which music type has the highest average focus rating
         if (this.uniqueMusicType.length === 0) return 'None';
@@ -104,5 +106,44 @@ export class DashboardComponent {
 
         return best;
     }
+
+    get mostUsedMusicType(): string { // to determine which music type was used most frequently
+        if (this.sessions.length === 0) return 'None'; 
+
+        const counts: { [key: string]: number } = {}; // to count instances of each music type
+
+        for (const s of this.sessions) {
+            const music = s.musicPlayed || 'None'; 
+            counts[music] = (counts[music] || 0) + 1; // increment count for this music type
+        }
+
+        let mostUsed = this.uniqueMusicType[0]; // assume first music type is most used
+        let maxCount = counts[mostUsed]; 
+
+        for (const music in counts) { // loop through each music type in counts
+            if (counts[music] > maxCount) {
+                mostUsed = music;
+                maxCount = counts[music];
+            }
+        }
+    return mostUsed;
+    }
+    
+    get worstMusicType(): string { // to determine which music type has the lowest average focus rating 
+        if (this.uniqueMusicType.length === 0) return 'None';
+
+        let worst = this.uniqueMusicType[0];
+        let worstScore = this.getAverageFocusByMusicType(worst);
+
+        for (const music of this.uniqueMusicType) { // loop through each unique music type
+            const score = this.getAverageFocusByMusicType(music); 
+            if (score < worstScore) {
+                worst = music;
+                worstScore = score;
+            }
+        }
+    return worst; 
+    }
+
 
 }
