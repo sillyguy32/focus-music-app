@@ -56,3 +56,10 @@
   font-size: 0.9em;
   color: #666;
 }
+
+.chart-container {
+  width: 100%;
+  max-width: 500px;
+  height: 300px;
+  margin: auto;
+}
