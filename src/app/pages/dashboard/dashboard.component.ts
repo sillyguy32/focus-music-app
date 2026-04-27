@@ -14,8 +14,10 @@ import { Chart } from 'chart.js/auto';
 export class DashboardComponent implements AfterViewInit, DoCheck {
 
   @ViewChild('focusChart') chartRef!: ElementRef;
+  @ViewChild('trendChart') trendChartRef!: ElementRef;
 
   chart: Chart | null = null;
+  trendChart: Chart | null = null;
   private lastSessionCount = 0;
 
   constructor(private sessionService: SessionService) {}
@@ -24,7 +26,7 @@ export class DashboardComponent implements AfterViewInit, DoCheck {
     const count = this.sessionService.getSessions().length;
     if (count !== this.lastSessionCount) {
       this.lastSessionCount = count;
-      setTimeout(() => this.createChart(), 0);
+      setTimeout(() => { this.createChart(); this.createTrendChart(); }, 0);
     }
   }
 
@@ -155,6 +157,85 @@ export class DashboardComponent implements AfterViewInit, DoCheck {
     return worst;
   }
 
+  get trendInfo(): { direction: 'improving' | 'declining' | 'stable' | 'insufficient'; change: number; sessionCount: number; message: string } {
+    const all = this.sessionService.getSessions()
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
+
+    if (all.length < 4) {
+      const needed = 4 - all.length;
+      return { direction: 'insufficient', change: 0, sessionCount: all.length, message: `Complete ${needed} more session${needed === 1 ? '' : 's'} to see your focus trend.` };
+    }
+
+    const recent = all.slice(-10);
+    const mid = Math.floor(recent.length / 2);
+    const firstAvg = recent.slice(0, mid).reduce((s, x) => s + x.focusRating, 0) / mid;
+    const secondAvg = recent.slice(mid).reduce((s, x) => s + x.focusRating, 0) / (recent.length - mid);
+    const change = secondAvg - firstAvg;
+    const count = recent.length;
+
+    if (change > 0.3) return { direction: 'improving', change, sessionCount: count, message: `Hell yeah! Your focus has been improving over your recent sessions, keep it up!` };
+    if (change < -0.3) return { direction: 'declining', change, sessionCount: count, message: `Your focus has been declining over your last few sessions, try switching things up!` };
+    return { direction: 'stable', change, sessionCount: count, message: `Your focus has been consistent across your recent sessions, nice!` };
+  }
+
+  get chronologicalSessions(): Session[] {
+    return this.sessionService.getSessions()
+      .sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime())
+      .slice(-15);
+  }
+
+  createTrendChart(): void {
+    if (!this.trendChartRef) return;
+
+    const sessions = this.chronologicalSessions;
+    if (sessions.length < 2) return;
+
+    const labels = sessions.map(s => new Date(s.startTime).toLocaleDateString([], { month: 'short', day: 'numeric' }));
+    const ratings = sessions.map(s => s.focusRating);
+
+    if (this.trendChart) this.trendChart.destroy();
+
+    const ctx = this.trendChartRef.nativeElement.getContext('2d');
+    const gradient = ctx.createLinearGradient(0, 0, 0, 160);
+    gradient.addColorStop(0, 'rgba(124, 106, 255, 0.35)');
+    gradient.addColorStop(1, 'rgba(124, 106, 255, 0)');
+
+    this.trendChart = new Chart(this.trendChartRef.nativeElement, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [{
+          label: 'Focus Rating',
+          data: ratings,
+          borderColor: '#7c6aff',
+          backgroundColor: gradient,
+          borderWidth: 2,
+          pointBackgroundColor: '#7c6aff',
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: {
+            min: 0, max: 5,
+            ticks: { stepSize: 1, color: '#6b7494' },
+            grid: { color: 'rgba(37, 42, 69, 0.8)' }
+          },
+          x: {
+            ticks: { color: '#6b7494', maxTicksLimit: 8 },
+            grid: { display: false }
+          }
+        }
+      }
+    });
+  }
+
   // THE chart
   createChart(): void {
 
@@ -199,8 +280,7 @@ export class DashboardComponent implements AfterViewInit, DoCheck {
     });
   }
 
-  // 🧠 lifecycle
   ngAfterViewInit(): void {
-    setTimeout(() => this.createChart(), 300);
+    setTimeout(() => { this.createChart(); this.createTrendChart(); }, 300);
   }
 }

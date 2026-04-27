@@ -74,6 +74,70 @@
   margin-bottom: 18px;
 }
 
+/* Trend Panel */
+.trend-insufficient {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 0;
+}
+
+.trend-icon-lg { font-size: 1.8rem; flex-shrink: 0; }
+
+.trend-msg-muted {
+  color: var(--text-muted);
+  font-size: 0.88rem;
+}
+
+.trend-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 18px;
+}
+
+.trend-improving { background: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.2); }
+.trend-declining { background: rgba(248, 113, 113, 0.08); border: 1px solid rgba(248, 113, 113, 0.2); }
+.trend-stable    { background: rgba(251, 191, 36, 0.08);  border: 1px solid rgba(251, 191, 36, 0.2); }
+
+.trend-text { flex: 1; }
+
+.trend-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 2px;
+}
+
+.trend-label-improving { color: var(--green); }
+.trend-label-declining { color: var(--red); }
+.trend-label-stable    { color: var(--yellow); }
+
+.trend-message {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.trend-delta {
+  font-size: 1.4rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.delta-improving { color: var(--green); }
+.delta-declining { color: var(--red); }
+.delta-stable    { color: var(--yellow); }
+
+.trend-chart-container {
+  height: 160px;
+  position: relative;
+}
+
 /* Music Insights */
 .insight-row {
   display: flex;

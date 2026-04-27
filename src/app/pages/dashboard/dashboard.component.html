@@ -8,7 +8,7 @@
     </div>
     <div class="stat-card">
       <span class="stat-icon">⏱</span>
-      <div class="stat-value">{{ totalFocusTime / 60 | number:'1.0-0' }}<span class="stat-unit">m</span></div>
+      <div class="stat-value">{{ totalFocusTime * 1000 | date:'HH:mm:ss':'UTC' }}<span class="stat-unit">m</span></div>
       <div class="stat-label">Total Focus Time</div>
     </div>
     <div class="stat-card">
@@ -23,7 +23,7 @@
     </div>
     <div class="stat-card">
       <span class="stat-icon"></span>
-      <div class="stat-value">{{ todayFocusTime / 60 | number:'1.0-0' }}<span class="stat-unit">m</span></div>
+      <div class="stat-value">{{ todayFocusTime * 1000 | date:'HH:mm:ss':'UTC' }}<span class="stat-unit">m</span></div>
       <div class="stat-label">Today's Focus</div>
     </div>
     <div class="stat-card accent-card">
@@ -31,6 +31,36 @@
       <div class="stat-value accent-value">{{ bestMusicType }}</div>
       <div class="stat-label">Best Music For You!</div>
     </div>
+  </div>
+
+  <div class="panel trend-panel">
+    <h3 class="panel-title">Focus Trend</h3>
+
+    @if (trendInfo.direction === 'insufficient') {
+      <div class="trend-insufficient">
+        <span class="trend-icon-lg">📊</span>
+        <p class="trend-msg-muted">{{ trendInfo.message }}</p>
+      </div>
+    } @else {
+      <div class="trend-header" [ngClass]="'trend-' + trendInfo.direction">
+        <span class="trend-icon-lg">
+          {{ trendInfo.direction === 'improving' ? '📈' : trendInfo.direction === 'declining' ? '📉' : '➡️' }}
+        </span>
+        <div class="trend-text">
+          <div class="trend-label" [ngClass]="'trend-label-' + trendInfo.direction">
+            {{ trendInfo.direction === 'improving' ? 'Improving' : trendInfo.direction === 'declining' ? 'Declining' : 'Stable' }}
+          </div>
+          <div class="trend-message">{{ trendInfo.message }}</div>
+        </div>
+        <div class="trend-delta" [ngClass]="'delta-' + trendInfo.direction">
+          {{ trendInfo.change > 0 ? '+' : '' }}{{ trendInfo.change | number:'1.1-1' }}
+        </div>
+      </div>
+
+      <div class="trend-chart-container">
+        <canvas #trendChart></canvas>
+      </div>
+    }
   </div>
 
   @if (sessions.length > 0) {
@@ -81,7 +111,7 @@
 
     @if (sessions.length === 0) {
       <div class="empty-state">
-        <p>No sessions yet — complete a focus session to see your history here.</p>
+        <p>No sessions yet! complete a focus session to see your history here! :3</p>
       </div>
     }
 
