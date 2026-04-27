@@ -1,47 +1,72 @@
-<h2>Focus Session (Pomodoro)</h2>
-<label for="music">Music:</label>
+<div class="session-card">
+  <h2 class="card-title">Focus Session</h2>
 
-<select [(ngModel)]="selectedMusic" name="music">
-  <option value="None">None</option>
-  <option value="Lo-fi">Lo-fi</option>
-  <option value="Classical">Classical</option>
-  <option value="Ambient">Ambient</option>
-  <option value="White Noise">White Noise</option>
-</select>
+  <div class="music-selector">
+    <label class="field-label">Music Playing</label>
+    <select [(ngModel)]="selectedMusic" name="music" class="music-select" [disabled]="isRunning || sessionCompleted">
+      <option value="None">None</option>
+      <option value="Lo-fi">Lo-fi</option>
+      <option value="Classical">Classical</option>
+      <option value="Ambient">Ambient</option>
+      <option value="White Noise">White Noise</option>
+    </select>
+  </div>
 
-<div *ngIf="!sessionCompleted">
-  <p class="time">{{ minutes }}:{{ seconds }}</p>
-
-  <button (click)="start()" [disabled]="isRunning">Start</button>
-  <button (click)="reset()">Reset</button>
-  <button (click)="stopEarly()" [disabled]="!isRunning">Stop</button>
-</div>
-
-<div *ngIf="sessionCompleted">
-  <h3>Session Complete ✅</h3>
-
-  <div *ngIf="!surveySubmitted">
-    <p><strong>How focused were you?</strong></p>
-
-    <div class="rating-row">
-      <button
-        *ngFor="let r of [1,2,3,4,5]"
-        (click)="setRating(r)"
-        [class.selected]="focusRating === r"
-        type="button">
-        {{ r }}
-      </button>
+  @if (!sessionCompleted) {
+    <div class="timer-ring" [class.running]="isRunning">
+      <div class="timer-time">{{ minutes < 10 ? '0' + minutes : minutes }}:{{ seconds }}</div>
+      <div class="timer-label">Pomodoro</div>
     </div>
 
-    <p class="hint" *ngIf="focusRating === null">Pick a rating from 1 to 5.</p>
+    <div class="btn-group">
+      <button class="btn btn-primary" (click)="start()" [disabled]="isRunning">Start</button>
+      <button class="btn btn-ghost" (click)="reset()">Reset</button>
+      <button class="btn btn-danger" (click)="stopEarly()" [disabled]="!isRunning">Stop</button>
+    </div>
+  }
 
-    <button (click)="submitSurvey()" [disabled]="focusRating === null">
-      Submit
-    </button>
-  </div>
+  @if (sessionCompleted) {
+    <div class="completion-flow">
+      <div class="completion-badge">✅</div>
+      <h3 class="completion-title">Session Complete!</h3>
 
-  <div *ngIf="surveySubmitted">
-    <p>Thanks! You rated this session: <strong>{{ focusRating }}</strong>/5</p>
-    <button (click)="reset()">Start another session</button>
-  </div>
+      @if (!surveySubmitted) {
+        <div class="survey">
+          <p class="survey-question">How focused were you?</p>
+
+          <div class="rating-row">
+            @for (r of [1,2,3,4,5]; track r) {
+              <button
+                (click)="setRating(r)"
+                [class.selected]="focusRating === r"
+                class="rating-btn"
+                type="button">
+                {{ r }}
+              </button>
+            }
+          </div>
+
+          <div class="rating-labels">
+            <span>😵 Distracted</span>
+            <span>🧠 Locked in</span>
+          </div>
+
+          @if (focusRating === null) {
+            <p class="hint">Pick a rating above</p>
+          }
+
+          <button class="btn btn-primary btn-full" (click)="submitSurvey()" [disabled]="focusRating === null">
+            Save Session
+          </button>
+        </div>
+      }
+
+      @if (surveySubmitted) {
+        <div class="thank-you">
+          <p class="thank-you-text">Saved! You rated this session <strong>{{ focusRating }}/5</strong></p>
+          <button class="btn btn-primary" (click)="reset()">Start New Session</button>
+        </div>
+      }
+    </div>
+  }
 </div>

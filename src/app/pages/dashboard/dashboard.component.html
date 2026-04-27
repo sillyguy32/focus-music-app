@@ -1,84 +1,109 @@
-<h2>Dashboard</h2>
+<div class="dash-section">
 
-<div class="stats-container">
-
-  <div class="stat-card">
-    <h3>Total Sessions</h3>
-    <p>{{ totalSessions }}</p>
+  <div class="stat-grid">
+    <div class="stat-card">
+      <span class="stat-icon"></span>
+      <div class="stat-value">{{ totalSessions }}</div>
+      <div class="stat-label">Total Sessions</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">⏱</span>
+      <div class="stat-value">{{ totalFocusTime / 60 | number:'1.0-0' }}<span class="stat-unit">m</span></div>
+      <div class="stat-label">Total Focus Time</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon">⭐</span>
+      <div class="stat-value">{{ averageFocus | number:'1.1-1' }}</div>
+      <div class="stat-label">Avg Focus Rating</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon"></span>
+      <div class="stat-value">{{ todaySessionsCount }}</div>
+      <div class="stat-label">Sessions Today</div>
+    </div>
+    <div class="stat-card">
+      <span class="stat-icon"></span>
+      <div class="stat-value">{{ todayFocusTime / 60 | number:'1.0-0' }}<span class="stat-unit">m</span></div>
+      <div class="stat-label">Today's Focus</div>
+    </div>
+    <div class="stat-card accent-card">
+      <span class="stat-icon"></span>
+      <div class="stat-value accent-value">{{ bestMusicType }}</div>
+      <div class="stat-label">Best Music For You!</div>
+    </div>
   </div>
 
-  <div class="stat-card">
-    <h3>Total Focus Time</h3>
-    <p>{{ totalFocusTime }} sec</p>
-  </div>
+  @if (sessions.length > 0) {
+    <div class="panel music-panel">
+      <h3 class="panel-title">Music Insights!</h3>
 
-  <div class="stat-card">
-    <h3>Average Focus Rating</h3>
-    <p>{{ averageFocus | number:'1.1-1' }}</p>
-  </div>
+      <div class="insight-row">
+        <div class="insight-chip green-chip">
+          <span class="chip-label">Best</span>
+          <span class="chip-value">{{ bestMusicType }}</span>
+        </div>
+        <div class="insight-chip yellow-chip">
+          <span class="chip-label">Most Used</span>
+          <span class="chip-value">{{ mostUsedMusicType }}</span>
+        </div>
+        <div class="insight-chip red-chip">
+          <span class="chip-label">Worst</span>
+          <span class="chip-value">{{ worstMusicType }}</span>
+        </div>
+      </div>
 
-  <div class="stat-card">
-    <h3>Today's Focus Time</h3>
-    <p>{{ todayFocusTime * 1000 | date:'mm:ss':'UTC' }} sec</p>
-  </div>
+      <div class="music-breakdown">
+        @for (music of uniqueMusicType; track music) {
+          <div class="music-row">
+            <span class="music-name">{{ music }}</span>
+            <div class="music-bar-track">
+              <div class="music-bar-fill"
+                   [style.width.%]="(getAverageFocusByMusicType(music) / 5) * 100"
+                   [style.background]="getAverageFocusByMusicType(music) >= 4 ? 'var(--green)' : getAverageFocusByMusicType(music) >= 3 ? 'var(--yellow)' : 'var(--red)'">
+              </div>
+            </div>
+            <span class="music-avg">{{ getAverageFocusByMusicType(music) | number:'1.1-1' }}</span>
+          </div>
+        }
+      </div>
+    </div>
 
-  <div class="stat-card">
-    <h3>Today's Sessions</h3>
-    <p>{{ todaySessionsCount }}</p>
-  </div>
+    <div class="panel chart-panel">
+      <h3 class="panel-title">Focus by Music Type</h3>
+      <div class="chart-container">
+        <canvas #focusChart></canvas>
+      </div>
+    </div>
+  }
 
-  <div class="stat-card">
-    <h3>Most Used Music 🎶 </h3>
-    <p>{{ mostUsedMusicType }}</p>
-  </div>
+  <div class="panel sessions-panel">
+    <h3 class="panel-title">Session History</h3>
 
-  <div class="stat-card">
-    <h3>Worst Music for you! </h3>
-    <p>{{ worstMusicType }}</p>
+    @if (sessions.length === 0) {
+      <div class="empty-state">
+        <p>No sessions yet — complete a focus session to see your history here.</p>
+      </div>
+    }
+
+    <div class="session-list">
+      @for (session of sessions; track session.startTime) {
+        <div class="session-card" [ngClass]="'session-' + getFocusClass(session.focusRating)">
+          <div class="session-left">
+            <div class="session-time">{{ session.startTime | date:'HH:mm' }}</div>
+            <div class="session-date">{{ session.startTime | date:'MMM d' }}</div>
+          </div>
+          <div class="session-mid">
+            <div class="session-music">{{ session.musicPlayed || 'None' }}</div>
+            <div class="session-duration">{{ session.duration * 1000 | date:'mm:ss':'UTC' }}</div>
+          </div>
+          <div class="session-right">
+            <span class="focus-badge" [ngClass]="getFocusClass(session.focusRating)">
+              {{ session.focusRating }} — {{ getFocusLabel(session.focusRating) }}
+            </span>
+          </div>
+        </div>
+      }
+    </div>
   </div>
 
 </div>
-
-<div class="stats-container single">
-  <div class="stat-card">
-    <h3>Best Music for you! 🎶</h3>
-    <p>{{ bestMusicType }}</p>
-  </div>
-</div>
-
-<h3>Focus by Music 🎧</h3>
-
-<div *ngFor="let music of uniqueMusicType" class="stat-card">
-  <p><strong>{{ music }}</strong></p>
-  <p>
-    Avg Focus:
-    {{ getAverageFocusByMusicType(music) | number:'1.1-1' }}
-  </p>
-</div>
-
-<h3> Focus Chart </h3>
-
-<div class="chart-container">
-<canvas #focusChart> </canvas> 
-</div>
-
-<h3>Sessions</h3>
-
-<div class="sessions">
-  <div *ngFor="let session of sessions" class="session-card">
-
-    <p><strong>{{ session.startTime | date:'HH:mm' }}</strong></p> <!-- show start time of session -->
-
-    <p>Duration: {{ session.duration * 1000 | date:'mm:ss':'UTC' }}</p>
-    <p>Music: {{ session.musicPlayed || 'None' }}</p> <!-- show music played during session -->
-    <p>
-
-    
-      Focus Rating:
-      <span [ngClass]="getFocusClass(session.focusRating)">
-        {{ session.focusRating }} ({{ getFocusLabel(session.focusRating) }})
-      </span>
-    </p>
-  </div>
-</div>
- 
